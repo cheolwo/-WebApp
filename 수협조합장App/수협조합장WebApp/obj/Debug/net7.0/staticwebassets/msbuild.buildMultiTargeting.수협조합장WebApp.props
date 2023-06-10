@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\수협조합장WebApp.props" />
+</Project>

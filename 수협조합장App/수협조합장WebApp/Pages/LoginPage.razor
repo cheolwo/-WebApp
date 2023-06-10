@@ -1,0 +1,108 @@
+﻿@page "/login"
+@using AppCommon.DTO;
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Security.Claims;
+@using 수협Common.ViewModel.수협.Login;
+@using 수협조합장WebApp.Service;
+@inject 수협LoginViewModel _loginViewModel
+@inject IJSRuntime _jsRunTime
+@inject NavigationManager _NavigationManager
+@inject CustomAuthenticationStateProvider _customAuthenticationStateProvider
+
+<AuthorizeView Roles="조합장">
+    <Authorized>
+        @foreach (var claim in Claims)
+        {
+            if (claim.Type == ClaimTypes.Role && claim.Value == "조합장")
+            {
+                <MudTextField Label="@claim.Value" T="string"></MudTextField>
+            }
+        }
+        <MudButton OnClick="Logout" Variant="Variant.Filled" Color="Color.Primary" Type="ButtonType.Submit">Logout</MudButton>
+    </Authorized>
+    <NotAuthorized>
+        <MudCard Width="300px">
+            <MudCardContent>
+                <MudTextField Label="Username" @bind-Value="_loginViewModel.Username" Required="true" />
+                <MudTextField Label="Password" @bind-Value="_loginViewModel.Password" Required="true" Type="InputType.Password" />
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <MudButton OnClick="HandleLogin" Variant="Variant.Filled" Color="Color.Primary" Type="ButtonType.Submit">Login</MudButton>
+                    <div>
+                        <MudButton Href="/RoleSelectPage" Variant="Variant.Filled" Color="Color.Primary" Type="ButtonType.Submit">Register</MudButton>
+                    </div>
+                </div>
+            </MudCardContent>
+        </MudCard>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    public List<Claim> Claims = new();
+    public string? token = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        token = await _jsRunTime.InvokeAsync<string>("localStorage.getItem", "token");
+        if(token != null)
+        {
+            Claims = _customAuthenticationStateProvider.GetClaimsFromToken(token);
+        }
+    }
+    private async Task Logout()
+    {
+        await _customAuthenticationStateProvider.Logout();
+        _NavigationManager.NavigateTo("/login", true);
+    }
+    private async Task HandleLogin()
+    {
+        await _loginViewModel.ExecuteLoginCommand();
+        token = await _jsRunTime.InvokeAsync<string>("localStorage.getItem", "token");
+        Claims = _customAuthenticationStateProvider.GetClaimsFromToken(token);
+        StateHasChanged();
+    }
+    private void NavigateToWarehouseInventory()
+    {
+        _NavigationManager.NavigateTo("/warehouse-inventory");
+    }
+    private void NavigateToOrderStatus()
+    {
+        _NavigationManager.NavigateTo("order-status");
+    }
+
+    private void NavigateToSalesStatus()
+    {
+        _NavigationManager.NavigateTo("/sales-status");
+    }
+
+    private void NavigateToPendingShipments()
+    {
+        _NavigationManager.NavigateTo("/pending-shipments");
+    }
+
+    private void NavigateToReceivedProducts()
+    {
+        _NavigationManager.NavigateTo("/received-products");
+    }
+
+    private void NavigateToCustomerInfo()
+    {
+        _NavigationManager.NavigateTo("/customer-info");
+    }
+
+    private void NavigateToShippingStatus()
+    {
+        _NavigationManager.NavigateTo("/shipping-status");
+    }
+
+    private void NavigateToProductManagement()
+    {
+        _NavigationManager.NavigateTo("/product-management");
+    }
+
+    private void NavigateToInventoryAdjustment()
+    {
+        _NavigationManager.NavigateTo("/inventory-adjustment");
+    }
+}

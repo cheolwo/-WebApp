@@ -1,0 +1,24 @@
+﻿@page "/"
+@using 수협Common.ViewModel.수협.Login
+@inject 수협LoginViewModel _loginViewModel
+
+
+<PageTitle>Index</PageTitle>
+<MudForm>
+    <MudItem>
+        <MudTextField Label="Username" @bind-Value="_loginViewModel.Username" />
+    </MudItem>
+    <MudItem>
+        <MudTextField Label="Password" @bind-Value="_loginViewModel.Password" Type="InputType.Password" />
+    </MudItem>
+    <MudItem>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="HandleLogin">Login</MudButton>
+    </MudItem>
+</MudForm>
+@code {
+    private async Task HandleLogin()
+    {
+        await _loginViewModel.ExecuteLoginCommand();
+    }
+}
+
