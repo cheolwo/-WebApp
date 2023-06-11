@@ -38,6 +38,18 @@
 </AuthorizeView>
 
 @code {
+    private async Task HandleLogin()
+    {
+        await _loginViewModel.ExecuteLoginCommand();
+        token = await _jsRunTime.InvokeAsync<string>("localStorage.getItem", "token");
+        Claims = _customAuthenticationStateProvider.GetClaimsFromToken(token);
+        StateHasChanged();
+    }
+    private async Task Logout()
+    {
+        await _customAuthenticationStateProvider.Logout();
+        _NavigationManager.NavigateTo("/login", true);
+    }
     private LoginModel loginModel = new LoginModel();
     public List<Claim> Claims = new();
     public string? token = null;
@@ -49,18 +61,6 @@
         {
             Claims = _customAuthenticationStateProvider.GetClaimsFromToken(token);
         }
-    }
-    private async Task Logout()
-    {
-        await _customAuthenticationStateProvider.Logout();
-        _NavigationManager.NavigateTo("/login", true);
-    }
-    private async Task HandleLogin()
-    {
-        await _loginViewModel.ExecuteLoginCommand();
-        token = await _jsRunTime.InvokeAsync<string>("localStorage.getItem", "token");
-        Claims = _customAuthenticationStateProvider.GetClaimsFromToken(token);
-        StateHasChanged();
     }
     private void NavigateToWarehouseInventory()
     {

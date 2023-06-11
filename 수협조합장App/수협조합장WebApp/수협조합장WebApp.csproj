@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FullFillmentService\FullFillMentSoulution\KoreaCommon\수협Common.csproj" />
+    <ProjectReference Include="..\..\..\FullFillmentService\FullFillMentSoulution\KoreaCommon\수협Common.csproj" />
   </ItemGroup>
 
 </Project>
